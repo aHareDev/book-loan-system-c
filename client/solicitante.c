@@ -15,6 +15,11 @@
 #include <string.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include "entities.h"
+
+
+void mostrar_menu();
+Solicitud leer_solicitud();
 
 int main(int argc, char *argv[]) {
 	char *pipeName = NULL;
@@ -33,13 +38,24 @@ int main(int argc, char *argv[]) {
 		exit(1);
 	}
 
+	// Si se ha proporcionado nombre de archivo de entrada
 	if (fileName) {
 		FILE *f = fopen(fileName, "r");
 		if (!f) {
 			perror("fopen");
 			return 1;
 		}
+
+		char op, name[];
+		int isbn = 0;
+		while (fscanf(f, " %c, %[^,], %d", &op, name, &isbn) == 3) {
+			printf("Solicitud: %c - %s - %d\n", op, name, isbn);
+		}
+
+	} else {
+		printf("Imprimir menú\n");
 	}
 
 	return 0;
 }
+
