@@ -1,0 +1,23 @@
+D, Alicia en el País de las Maravillas, 2133 
+R, Hamlet, 234 
+R, Historia de Colombia, 223 
+P, Cálculo Diferencial, 120 
+P, Algebra Lineal, 111 
+D, Don Quijote de la Mancha, 3456
+R, La Odisea, 567
+P, Física General, 678
+D, El Principito, 789
+P, Programación en C, 890
+R, El Señor de los Anillos, 901
+D, Moby Dick, 1012
+P, Matemáticas Discretas, 1113
+R, La Divina Comedia, 1214
+D, Crimen y Castigo, 1315
+P, Bases de Datos, 1416
+R, Macbeth, 1517
+D, El Gran Gatsby, 1618
+P, Química Orgánica, 1719
+R, Romeo y Julieta, 1820
+D, Cien Años de Soledad, 1921
+P, Estadística, 2022
+Q, Salir, 0
