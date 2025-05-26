@@ -2,7 +2,7 @@
 CC = gcc
 CFLAGS = -Wall -pthread
 
-SRC = receptor.c buffer.c utils.c auxiliar1.c auxiliar2.c
+SRC = receptor.c entities.c buffer.c utils.c auxiliar1.c auxiliar2.c
 OUT = receptor
 PIPE_PATH = ../ipc/pipeReceptor
 DATA_FILE = filedatos.txt

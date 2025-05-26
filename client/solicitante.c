@@ -159,10 +159,9 @@ void displayMenu(Request *reqPtr) {
 	}
 
 	// Mostrar resumen de la solicitud
-	printf("\n-- ** Solicitud realizada ** --\n");
-	printf("   Operación: %c\n", reqPtr->operation);
-      	printf("   Libro: %s\n", reqPtr->title);
-     	printf("   ISBN: %d\n", reqPtr->isbn);
-        printf("\n-- **                     ** --\n");
+	printf("\n- Solicitud realizada\n");
+	printf("Operación: %c\n", reqPtr->operation);
+      	printf("Libro: %s\n", reqPtr->title);
+     	printf("ISBN: %d\n", reqPtr->isbn);
 	printf("\n\n");
 }

@@ -7,21 +7,20 @@
 int readRequest(int fd_read, Request *req) {
 	ssize_t bytes = read(fd_read, req, sizeof(Request));
 	if (bytes <= 0) {
-		fprintf(stderr, "Error o lectura incompleta del pipe receptor\n");
 		return 0;
 	}
 	return 1;
 }
 
-int sendResponse(Request *req) {
+int sendResponse(Request *req, char *response) {
 	int fd_res = open(req->pipeResponse, O_WRONLY);
 	if (fd_res < 0) {
-		perror("Error al abrir el pipe de respuesta");
+		perror("Error abriendo el pipe de respuesta");
 		return 0;
 	}
 
 	Response res = { .code = 200 };
-	snprintf(res.message, sizeof(res.message), "✅ Confirmación: libro recibido '%s' (ISBN: %d)", req->title, req->isbn);
+	snprintf(res.message, sizeof(res.message), "%s", response);
 
 	ssize_t bytes = write(fd_res, &res, sizeof(Response));
 	if (bytes != sizeof(Response)) {
@@ -70,11 +69,45 @@ int loadLibraryFromFile(Library *db, char *filename) {
 	return 1;
 }
 
-void mostrarSolicitud(Request *req) {
-    printf("\n  Solicitud recibida:\n");
+int saveLibraryToFile(Library *lib, const char *filename) {
+    if (!lib || !filename) return 0;
+
+    FILE *fp = fopen(filename, "w");
+    if (!fp) {
+        perror("Error abriendo archivo de salida");
+        return 0;
+    }
+
+    for (int i = 0; i < MAX_BOOKS; i++) {
+        Book *book = &lib->books[i];
+        if (book->isbn == 0 || book->totalCopies == 0) continue;
+
+        fprintf(fp, "%s, %d, %d\n", book->title, book->isbn, book->totalCopies);
+
+        for (int j = 0; j < book->totalCopies; j++) {
+            Copy *copy = &book->copies[j];
+            fprintf(fp, "%d, %c, %s\n", copy->id, copy->status, copy->date);
+        }
+    }
+
+    fclose(fp);
+    return 1;
+}
+
+void library_printReports(Library *library) {
+    printf("\n\n========== REPORTE FINAL ==========\n");
+    printf("Status, Nombre del Libro, ISBN, ejemplar, fecha\n");
+
+    for (int i = 0; i < NAME_SIZE && library->reports[i].isbn != 0; i++) {
+        Report *r = &library->reports[i];
+        printf("%c, %s, %d, %d, %s\n", r->status, r->bookName, r->isbn, r->idCopy, r->date);
+    }
+}
+
+void showRequest(Request *req) {
+    printf("\n- Solicitud recibida:\n");
     printf("  PID cliente  : %d\n", req->pid);
     printf("  Operación    : %c\n", req->operation);
     printf("  Título libro : %s\n", req->title);
     printf("  ISBN         : %d\n", req->isbn);
-    printf("  Pipe respuesta: %s\n\n", req->pipeResponse);
 }

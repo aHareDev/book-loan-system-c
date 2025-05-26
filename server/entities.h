@@ -32,6 +32,14 @@ typedef struct {
 } Buffer;
 
 typedef struct {
+	char status;
+	char bookName[MAX_CHARACTERS];
+	int isbn;
+	int idCopy;
+	char date[30];
+} Report;
+
+typedef struct {
 	int id;
 	int isbn;
 	char status; // 'D' o 'P'
@@ -46,10 +54,20 @@ typedef struct {
 } Book;
 
 typedef struct {
+	char fileOutput[MAX_CHARACTERS];
+     int redibujar_menu;
+     pthread_mutex_t redibujar_mutex;
         Buffer *buf;
         Book books[MAX_BOOKS];
+	Report reports[NAME_SIZE];
         int *ejecutando;
-        char *file;
+	pthread_mutex_t ejecutando_mutex;
+	pthread_mutex_t print_mutex;
 } Library;
+
+void library_addReport(Library *library, char status, const char *title, int isbn, int idCopy, const char *date);
+Book *library_findBookByISBN(Library *lb, int isbn);
+Copy *library_findAvailableCopy(Library *lb, int isbn);
+Copy *library_findBorrowedCopy(Library *lb, int isbn);
 
 #endif
