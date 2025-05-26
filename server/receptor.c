@@ -78,8 +78,9 @@ int main(int argc, char *argv[]) {
 	buffer_init(&buffer);
 
 	Library library = {
-	    .buf = &buffer,
-	    .ejecutando = &ejecutando
+		.interaction = 1,  // Para que imprima menú al iniciar
+		.buf = &buffer,
+		.ejecutando = &ejecutando
 	};
 
 	strncpy(library.fileOutput, fileOutput, MAX_CHARACTERS - 1);
@@ -87,8 +88,6 @@ int main(int argc, char *argv[]) {
 
 	pthread_mutex_init(&library.ejecutando_mutex, NULL);
 	pthread_mutex_init(&library.print_mutex, NULL);
-	library.redibujar_menu = 0;
-	pthread_mutex_init(&library.redibujar_mutex, NULL);
 
 	int fd_read = open(pipeReceptor, O_NONBLOCK);
 	if (fd_read < 0) {
@@ -111,8 +110,6 @@ int main(int argc, char *argv[]) {
 
 	while(ejecutando) {
 		if (readRequest(fd_read, &req)) {
-			if (verbose) showRequest(&req);
-
 			if (req.operation == 'D' || req.operation == 'R') {
 				char *msg = (req.operation == 'D') ? "✅ La biblioteca está recibiendo el libro."
 							: "✅ Renovación aceptada. Nueva fecha de entrega en 7 días.";
@@ -122,6 +119,7 @@ int main(int argc, char *argv[]) {
 				} else {
 					fprintf(stderr, "No se pudo enviar la respuesta al cliente %d\n", req.pid);
 				}
+				library.interaction = 1;
 			} else if (req.operation == 'P') {
 				Book *book = library_findBookByISBN(&library, req.isbn);
 				Copy *copy = library_findAvailableCopy(&library, req.isbn);
@@ -134,6 +132,7 @@ int main(int argc, char *argv[]) {
 						now->tm_mday, now->tm_mon + 1, now->tm_year + 1900);
 
 	                                library_addReport(&library, 'P', book->title, book->isbn, copy->id, copy->date);
+					library.interaction = 1;
 				} else {
 					sendResponse(&req, "✅ Solicitud Rechazada. El libro solicitado no tiene copias disponibles.");
 				}
@@ -149,6 +148,7 @@ int main(int argc, char *argv[]) {
 					}
 				}
 			}
+			if (verbose) showRequest(&req);
 		}
 	}
 	printf("\n\n");

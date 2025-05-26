@@ -33,40 +33,58 @@ int sendResponse(Request *req, char *response) {
 }
 
 int loadLibraryFromFile(Library *db, char *filename) {
-	FILE *fp = fopen(filename, "r");
+    FILE *fp = fopen(filename, "r");
+    if (!fp) {
+        perror("Error abriendo archivo");
+        return 0;
+    }
 
-	if (!fp) {
-		perror("Error abriendo archivo");
-		return 0;
-	}
+    char line[MAX_CHARACTERS];
+    int iBook = 0;
+    Book book;
+    int jCopy = 0;
+    int leyendoLibro = 0;
 
-	char line[MAX_CHARACTERS];
-	int iBook = 0, jCopy = 0;
-	Book book;
+    while (fgets(line, sizeof(line), fp)) {
+        if (line[0] == '\n' || line[0] == '\r') continue;
 
-	while(fgets(line, sizeof(line), fp)) {
-		if (line[0] == '\n' || line[0] == '\r') continue;
+        char title[MAX_CHARACTERS];
+        int isbn, total;
 
-		if (sscanf(line, " %99[^,], %d, %d", book.title, &book.isbn, &book.totalCopies) == 3) {
-			jCopy = 0;
-		} else if (jCopy < book.totalCopies && sscanf(line, " %d, %c, %19[^\n]", 
-						&book.copies[jCopy].id, &book.copies[jCopy].status, book.copies[jCopy].date) == 3) {
-			book.copies[jCopy].isbn = book.isbn;
-			jCopy++;
-		}
-	}
+        if (sscanf(line, " %99[^,], %d, %d", title, &isbn, &total) == 3) {
+            // Guardar libro anterior si estaba leyendo
+            if (leyendoLibro && iBook < MAX_BOOKS) {
+                db->books[iBook++] = book;
+            }
 
-	if (jCopy == book.totalCopies) {
-		if (iBook < MAX_BOOKS) {
-			db->books[iBook++] = book;
-		} else {
-			fprintf(stderr, "Máximo de libros alcanzado.\n");
-			return 1;
-		}
-	}
+            // Nuevo libro
+            strcpy(book.title, title);
+            book.isbn = isbn;
+            book.totalCopies = total;
+            jCopy = 0;
+            leyendoLibro = 1;
+        }
+        else if (leyendoLibro && jCopy < ITEMS_BUFFER) {
+            int id;
+            char status;
+            char date[20];
+            if (sscanf(line, " %d, %c, %19[^\n]", &id, &status, date) == 3) {
+                book.copies[jCopy].id = id;
+                book.copies[jCopy].status = status;
+                strcpy(book.copies[jCopy].date, date);
+                book.copies[jCopy].isbn = book.isbn;
+                jCopy++;
+            }
+        }
+    }
 
-	fclose(fp);
-	return 1;
+    // Guardar último libro
+    if (leyendoLibro && iBook < MAX_BOOKS) {
+        db->books[iBook++] = book;
+    }
+
+    fclose(fp);
+    return 1;
 }
 
 int saveLibraryToFile(Library *lib, const char *filename) {
@@ -95,7 +113,7 @@ int saveLibraryToFile(Library *lib, const char *filename) {
 }
 
 void library_printReports(Library *library) {
-    printf("\n\n========== REPORTE FINAL ==========\n");
+    printf("\n\n ====  REPORTE FINAL ==== \n");
     printf("Status, Nombre del Libro, ISBN, ejemplar, fecha\n");
 
     for (int i = 0; i < NAME_SIZE && library->reports[i].isbn != 0; i++) {
@@ -105,9 +123,9 @@ void library_printReports(Library *library) {
 }
 
 void showRequest(Request *req) {
-    printf("\n- Solicitud recibida:\n");
-    printf("  PID cliente  : %d\n", req->pid);
-    printf("  Operación    : %c\n", req->operation);
-    printf("  Título libro : %s\n", req->title);
-    printf("  ISBN         : %d\n", req->isbn);
+    printf("\n\n ==== Solicitud recibida  ==== \n");
+    printf("PID cliente  : %d\n", req->pid);
+    printf("Operación    : %c\n", req->operation);
+    printf("Título libro : %s\n", req->title);
+    printf("ISBN         : %d\n\n", req->isbn);
 }

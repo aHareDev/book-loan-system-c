@@ -55,14 +55,14 @@ typedef struct {
 
 typedef struct {
 	char fileOutput[MAX_CHARACTERS];
-     int redibujar_menu;
-     pthread_mutex_t redibujar_mutex;
+	int interaction;
         Buffer *buf;
         Book books[MAX_BOOKS];
 	Report reports[NAME_SIZE];
         int *ejecutando;
 	pthread_mutex_t ejecutando_mutex;
 	pthread_mutex_t print_mutex;
+	pthread_mutex_t interaction_mutex;
 } Library;
 
 void library_addReport(Library *library, char status, const char *title, int isbn, int idCopy, const char *date);

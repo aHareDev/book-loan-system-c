@@ -12,23 +12,20 @@ void *auxiliar1(void *arg) {
 	Request req;
 
 	while (1) {
-	        pthread_mutex_lock(&lb->ejecutando_mutex);
-	        int en_ejecucion = *(lb->ejecutando);
-	        pthread_mutex_unlock(&lb->ejecutando_mutex);
-	        if (!en_ejecucion) break;
+		pthread_mutex_lock(&lb->ejecutando_mutex);
+		int en_ejecucion = *(lb->ejecutando);
+		pthread_mutex_unlock(&lb->ejecutando_mutex);
+		if (!en_ejecucion) break;
+
 		buffer_consume(lb->buf, &req);
 
-	        // Verificar nuevamente después del consumo
-	        pthread_mutex_lock(&lb->ejecutando_mutex);
-	        en_ejecucion = *(lb->ejecutando);
-	        pthread_mutex_unlock(&lb->ejecutando_mutex);
-	        if (!en_ejecucion) break;
+		pthread_mutex_lock(&lb->ejecutando_mutex);
+		en_ejecucion = *(lb->ejecutando);
+		pthread_mutex_unlock(&lb->ejecutando_mutex);
+		if (!en_ejecucion) break;
 
-	        // Buscar libro y copia
-	        pthread_mutex_lock(&lb->print_mutex);
-	        Book *book = library_findBookByISBN(lb, req.isbn);
-	        Copy *copy = library_findBorrowedCopy(lb, req.isbn);
-	        pthread_mutex_unlock(&lb->print_mutex);
+		Book *book = library_findBookByISBN(lb, req.isbn);
+		Copy *copy = library_findBorrowedCopy(lb, req.isbn);
 
 		if (copy) {
 			time_t t = time(NULL);
@@ -44,19 +41,12 @@ void *auxiliar1(void *arg) {
 				t += 7 * 24 * 60 * 60; // +7 días
 				struct tm *new_date = localtime(&t);
 				snprintf(copy->date, sizeof(copy->date), "%02d-%02d-%04d",
-					new_date->tm_mday, new_date->tm_mon + 1, new_date->tm_year + 1900);
-
+					new_date->tm_mday, new_date->tm_mon + 1, new_date->tm_year + 1900);;
 				library_addReport(lb, 'P', book->title, book->isbn, copy->id, copy->date);
 			}
                 } else {
-			pthread_mutex_lock(&lb->print_mutex);
-			fprintf(stderr, "Devolución para ISBN %d rechazada. No se encontró copia prestada.\n", req.isbn);
-			pthread_mutex_unlock(&lb->print_mutex);
+			printf("\nDevolución para ISBN %d rechazada. No se encontró copia prestada.\n", req.isbn);
 		}
-		pthread_mutex_lock(&lb->redibujar_mutex);
-		lb->redibujar_menu = 1;
-		pthread_mutex_unlock(&lb->redibujar_mutex);
-
 	}
 	return NULL;
 }
