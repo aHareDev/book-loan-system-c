@@ -1,7 +1,17 @@
 # Sistema para el Préstamo de Libros
 ## Descripción General
 
+Este proyecto consiste en el desarrollo de un sistema distribuido para gestionar el préstamo de libros en una biblioteca, permitiendo que múltiples usuarios realicen operaciones de manera concurrente mediante procesos que se comunican con un servidor central a través de pipes. El servidor procesa préstamos directamente y delega devoluciones y renovaciones a un hilo auxiliar mediante un buffer sincronizado, mientras un segundo hilo administra comandos de consola. El sistema garantiza la sincronización de acceso a los recursos compartidos y persiste el estado de los libros mediante archivos estructurados.
+
 ## Objetivos
+
+*Desarrollar un sistema distribuido para la gestión de préstamos bibliográficos, que permita la interacción simultánea de múltiples usuarios mediante procesos independientes, utilizando comunicación interprocesos basada en pipes para enviar solicitudes de préstamo, devolución y renovación a un servidor central.
+
+*Implementar mecanismos de sincronización eficientes mediante semáforos y mutex POSIX, que garanticen el acceso concurrente seguro a estructuras compartidas como el buffer de solicitudes y el archivo que actúa como base de datos, previniendo condiciones de carrera y garantizando la integridad de la información.
+
+*Estructurar la lógica del servidor a través de multihilo, delegando la atención de operaciones diferidas (como devoluciones y renovaciones) a un hilo auxiliar mediante un patrón productor-consumidor, y habilitando un segundo hilo para gestionar comandos administrativos en tiempo de ejecución sin interrumpir el procesamiento principal.
+
+*Garantizar la persistencia y trazabilidad del sistema, mediante el manejo de archivos estructurados para la carga de datos iniciales, el almacenamiento del estado final de la biblioteca, y la generación de reportes detallados de las operaciones ejecutadas, facilitando la verificación y análisis del funcionamiento del sistema.
 
 ## Estructura del Proyecto
 ### Carpeta client/
