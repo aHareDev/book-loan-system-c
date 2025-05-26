@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
 		if (strcmp(argv[i], "-i") == 0 && i + 1 < argc)
 			requestFile = argv[++i];
 		if (strcmp(argv[i], "-p") == 0 && i + 1 < argc)
-			pipeReceptor = argv[++i];
+			strncpy(pipeReceptor, argv[++i], PIPE_NAME_MAX);
 	}
 
 	if (pipeReceptor == NULL) {
@@ -72,12 +72,12 @@ int main(int argc, char *argv[]) {
 
 		while (fscanf(file, "%c, %[^\n,], %d\n", &req.operation, req.title, &req.isbn) == 3) {
 			req.pid = getpid();
-			printf("Solicitud: %c - %s - %d PID: %d\n", req.operation, req.title, req.isbn, req.pid);
+			printf("- Solicitud: %c - %s - %d PID: %d\n", req.operation, req.title, req.isbn, req.pid);
 			if(write(fd_write, &req, sizeof(Request)) == -1 ) {
 				perror("Error al enviar solicitud");
 			}
-
-			waitResponse(pipeResponse, res);
+			if (req.operation != 'Q') waitResponse(pipeResponse, res);
+			printf("\n");
 		}
 
 		fclose(file);
@@ -90,8 +90,8 @@ int main(int argc, char *argv[]) {
 			if(write(fd_write, &req, sizeof(Request)) == -1) {
 				perror("Error al enviar solicitud");
 			}
-
 			waitResponse(pipeResponse, res);
+			printf("\n");
 		} while(1);
 	}
 
@@ -117,7 +117,7 @@ void waitResponse(char *pipeResponse, Response res) {
 	}
 
 	if (read(fd_read, &res, sizeof(Response)) > 0) {
-		printf("Código de respuesta: %d\nContenido: %s\n", res.code, res.message);
+		printf("\nCódigo de respuesta: %d\nContenido: %s\n", res.code, res.message);
 	} else {
 		printf("No se recibió respuesta o fue vacía.\n");
 	}
@@ -159,9 +159,6 @@ void displayMenu(Request *reqPtr) {
 	}
 
 	// Mostrar resumen de la solicitud
-	printf("\n- Solicitud realizada\n");
-	printf("Operación: %c\n", reqPtr->operation);
-      	printf("Libro: %s\n", reqPtr->title);
-     	printf("ISBN: %d\n", reqPtr->isbn);
-	printf("\n\n");
+	printf("\nSolicitud realizada\n");
+	printf("Operación: %c  -  Libro: %s  -  ISBN: %d\n", reqPtr->operation, reqPtr->title, reqPtr->isbn);
 }

@@ -113,7 +113,7 @@ int saveLibraryToFile(Library *lib, const char *filename) {
 }
 
 void library_printReports(Library *library) {
-    printf("\n\n ====  REPORTE FINAL ==== \n");
+    printf("\n\nREPORTE\n");
     printf("Status, Nombre del Libro, ISBN, ejemplar, fecha\n");
 
     for (int i = 0; i < NAME_SIZE && library->reports[i].isbn != 0; i++) {
@@ -123,9 +123,9 @@ void library_printReports(Library *library) {
 }
 
 void showRequest(Request *req) {
-    printf("\n\n ==== Solicitud recibida  ==== \n");
+    printf("\nSolicitud recibida\n");
     printf("PID cliente  : %d\n", req->pid);
     printf("Operación    : %c\n", req->operation);
     printf("Título libro : %s\n", req->title);
-    printf("ISBN         : %d\n\n", req->isbn);
+    printf("ISBN         : %d\n", req->isbn);
 }
