@@ -70,7 +70,6 @@ make runfile       # Ejecuta RP y guarda resultado en archivo
 make runfilev      # Ejecuta RP con verbose y guarda resultado
 ```
 
-
 - Proceso Solicitante.
 El ejecutable solicitante puede ejecutarse de dos formas.
 
@@ -90,7 +89,7 @@ make run           # Ejecuta PS en modo interactivo
 make runfile       # Ejecuta PS con archivo de entrada
 ```
 
-Limpiar
+### Limpiar
 Para eliminar todos los ejecutables generados:
 
 ```bash
