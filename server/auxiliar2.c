@@ -9,7 +9,14 @@ void *auxiliar2(void *arg) {
 	char comando;
 
 	while (*(lb->ejecutando)) {
-		printf("Ingrese comando (r = reporte, s = salir): ");
+		printf(" ╔══════════════════════════════════════╗\n");
+		printf(" ║          MENÚ DE COMANDOS            ║\n");
+		printf(" ╠══════════════════════════════════════╣\n");
+		printf(" ║  r = Imprimir reporte                ║\n");
+		printf(" ║  s = Salir                           ║\n");
+		printf(" ╚══════════════════════════════════════╝\n");
+
+		printf("\nIngrese comando: ");
 		scanf(" %c", &comando);
 		if (comando == 's') {
 			*(lb->ejecutando) = 0;

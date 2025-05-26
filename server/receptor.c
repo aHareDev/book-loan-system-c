@@ -70,7 +70,7 @@ int main(int argc, char *argv[]) {
 		return 0;
 	}
 
-	printf("=== Servidor esperando solicitudes en '%s'... ===\n", pipeReceptor);
+	printf("➤ Servidor esperando solicitudes en Pipe: '%s'\n", pipeReceptor);
 
 	pthread_t thread1, thread2;
 	pthread_create(&thread1, NULL, auxiliar1, &library);
@@ -94,7 +94,7 @@ int main(int argc, char *argv[]) {
 			} else if (req.operation == 'P') {
 				printf("Actualiza base de datos\n");
 			} else if (req.operation == 'Q') {
-				printf("Cliente %d ha terminado sus solicitudes.\n", req.pid);
+				printf("\nCliente %d ha terminado sus solicitudes.\n", req.pid);
 			}
 		}
 	}
