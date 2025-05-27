@@ -38,6 +38,9 @@ o archivos de instrucciones y enviarlas al servidor.
 - `Makefile`: Contiene instrucciones para compilar y ejecutar automáticamente los archivos del programa receptor.
 
 ## Compilación y Ejecución
+⚠️ Antes de compilar y ejecutar el programa solicitante se debe iniciar la ejecución del programa receptor, de lo contrario
+se mostrará un aviso y el progreama cliente terminará.
+
 ### Compilar
 - Código de Receptor (RP).
 ```bash

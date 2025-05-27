@@ -53,10 +53,10 @@ int main(int argc, char *argv[]) {
 	        return 1;
 	}
 
-	// Abrir pipe del receptor para enviar solicitudes
-	int fd_write = open(pipeReceptor, O_WRONLY);
+	int fd_write = open(pipeReceptor, O_WRONLY | O_NONBLOCK);
 	if (fd_write < 0) {
-		perror("Error al abrir el pipe receptor");
+		perror("\nError al abrir el pipe receptor");
+		fprintf(stderr, "El servidor/receptor parece estar apagado. Intenta iniciarlo antes de ejecutar este programa.\n\n");
 		return EXIT_FAILURE;
 	}
 
