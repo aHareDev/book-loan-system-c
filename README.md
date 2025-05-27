@@ -5,13 +5,13 @@ Este proyecto consiste en el desarrollo de un sistema distribuido para gestionar
 
 ## Objetivos
 
-*Desarrollar un sistema distribuido para la gestión de préstamos bibliográficos, que permita la interacción simultánea de múltiples usuarios mediante procesos independientes, utilizando comunicación interprocesos basada en pipes para enviar solicitudes de préstamo, devolución y renovación a un servidor central.
+- Desarrollar un sistema distribuido para la gestión de préstamos bibliográficos, que permita la interacción simultánea de múltiples usuarios mediante procesos independientes, utilizando comunicación interprocesos basada en pipes para enviar solicitudes de préstamo, devolución y renovación a un servidor central.
 
-*Implementar mecanismos de sincronización eficientes mediante semáforos y mutex POSIX, que garanticen el acceso concurrente seguro a estructuras compartidas como el buffer de solicitudes y el archivo que actúa como base de datos, previniendo condiciones de carrera y garantizando la integridad de la información.
+- Implementar mecanismos de sincronización eficientes mediante semáforos y mutex POSIX, que garanticen el acceso concurrente seguro a estructuras compartidas como el buffer de solicitudes y el archivo que actúa como base de datos, previniendo condiciones de carrera y garantizando la integridad de la información.
 
-*Estructurar la lógica del servidor a través de multihilo, delegando la atención de operaciones diferidas (como devoluciones y renovaciones) a un hilo auxiliar mediante un patrón productor-consumidor, y habilitando un segundo hilo para gestionar comandos administrativos en tiempo de ejecución sin interrumpir el procesamiento principal.
+- Estructurar la lógica del servidor a través de multihilo, delegando la atención de operaciones diferidas (como devoluciones y renovaciones) a un hilo auxiliar mediante un patrón productor-consumidor, y habilitando un segundo hilo para gestionar comandos administrativos en tiempo de ejecución sin interrumpir el procesamiento principal.
 
-*Garantizar la persistencia y trazabilidad del sistema, mediante el manejo de archivos estructurados para la carga de datos iniciales, el almacenamiento del estado final de la biblioteca, y la generación de reportes detallados de las operaciones ejecutadas, facilitando la verificación y análisis del funcionamiento del sistema.
+- Garantizar la persistencia y trazabilidad del sistema, mediante el manejo de archivos estructurados para la carga de datos iniciales, el almacenamiento del estado final de la biblioteca, y la generación de reportes detallados de las operaciones ejecutadas, facilitando la verificación y análisis del funcionamiento del sistema.
 
 ## Estructura del Proyecto
 ### Carpeta client/
@@ -26,10 +26,12 @@ o archivos de instrucciones y enviarlas al servidor.
 ### Carpeta server/
 - `receptor.c`: Contiene la lógica principal del proceso receptor (PR), incluyendo el procesamiento de solicitudes y creación de hilos.
 - `filedatos.txt`: Base de datos inicial de libros de la biblioteca, con información de ejemplares, estado y fechas.
+- `filesalida.txt`: Guarda la base de datos modificada por el programa.
 - `auxiliar1.c`: Implementación del hilo que atiende solicitudes de devolución y renovación (consumidor del buffer).
 - `auxiliar2.c`: Implementación del hilo encargado de leer comandos desde consola (r para reporte, s para salir).
 - `buffer.c`: Implementación del buffer tipo productor-consumidor, con funciones para insertar y extraer solicitudes.
 - `buffer.h`: Declaraciones de las estructuras y funciones utilizadas para el manejo del buffer compartido.
+- `entities.c`: Implementación de funciones aplicadas a las entidades.
 - `entities.h`: Definición de estructuras de datos clave como libros, ejemplares, y solicitudes.
 - `utils.c`: Funciones auxiliares comunes: parsing de archivos, lectura y escritura de la BD, etc.
 - `utils.h`: Declaración de funciones auxiliares y utilitarias utilizadas en todo el sistema.
@@ -44,7 +46,7 @@ make
 Este comando compila el ejecutable receptor utilizando todos los archivos fuente relacionados (receptor.c, buffer.c, utils.c, auxiliar1.c, auxiliar2.c)
 y las librerías necesarias (-pthread).
 ```bash
-gcc -Wall -pthread receptor.c buffer.c utils.c auxiliar1.c auxiliar2.c -o receptor
+gcc -Wall -pthread receptor.c buffer.c entities.c utils.c auxiliar1.c auxiliar2.c -o receptor
 ```
 
 - Código del Solicitante (PS).
