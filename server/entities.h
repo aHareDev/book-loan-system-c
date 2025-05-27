@@ -9,6 +9,7 @@
 #define ITEMS_BUFFER 10
 #define MAX_BOOKS 30
 
+// Representa una solicitud enviada por un cliente.
 typedef struct {
     	char operation;
     	char title[NAME_SIZE];
@@ -17,11 +18,13 @@ typedef struct {
 	char pipeResponse[PIPE_NAME_SIZE];
 } Request;
 
+// Estructura para la respuesta enviada a un cliente.
 typedef struct {
 	int code;
 	char message[MAX_CHARACTERS];
 } Response;
 
+// Buffer circular sincronizado para almacenar solicitudes.
 typedef struct {
 	Request items[ITEMS_BUFFER];
 	int in;
@@ -31,6 +34,7 @@ typedef struct {
 	sem_t empty;
 } Buffer;
 
+// Registro de operaciones realizadas en la biblioteca.
 typedef struct {
 	char status;
 	char bookName[MAX_CHARACTERS];
@@ -39,6 +43,7 @@ typedef struct {
 	char date[30];
 } Report;
 
+// Representa una copia de un libro con estado y fecha.
 typedef struct {
 	int id;
 	int isbn;
@@ -46,6 +51,7 @@ typedef struct {
 	char date[30];
 } Copy;
 
+// Estructura que representa un libro con sus copias.
 typedef struct {
 	char title[MAX_CHARACTERS];
 	int isbn;
@@ -53,6 +59,7 @@ typedef struct {
 	Copy copies[ITEMS_BUFFER];
 } Book;
 
+// Estructura principal que representa la biblioteca.
 typedef struct {
 	char fileOutput[MAX_CHARACTERS];
 	int interaction;
@@ -65,9 +72,16 @@ typedef struct {
 	pthread_mutex_t interaction_mutex;
 } Library;
 
+// Función para agregar un reporte en la biblioteca.
 void library_addReport(Library *library, char status, const char *title, int isbn, int idCopy, const char *date);
+
+// Busca un libro en la biblioteca por su ISBN.
 Book *library_findBookByISBN(Library *lb, int isbn);
+
+// Busca una copia disponible para préstamo por ISBN.
 Copy *library_findAvailableCopy(Library *lb, int isbn);
+
+// Busca una copia actualmente prestada por ISBN.
 Copy *library_findBorrowedCopy(Library *lb, int isbn);
 
 #endif
