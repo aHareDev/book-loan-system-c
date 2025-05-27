@@ -45,9 +45,9 @@ void *auxiliar2(void *arg) {
 		} else {
 			scanf(" %c", &comando);
 			if (comando == 's') {
+				saveLibraryToFile(lb, lb->fileOutput);
 				pthread_mutex_lock(&lb->ejecutando_mutex);
 				*(lb->ejecutando) = 0;
-				saveLibraryToFile(lb, lb->fileOutput);
 				pthread_mutex_unlock(&lb->ejecutando_mutex);
 				return NULL;
 			} else if (comando == 'r') {

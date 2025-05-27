@@ -92,7 +92,7 @@ int main(int argc, char *argv[]) {
 			}
 			waitResponse(pipeResponse, res);
 			printf("\n");
-		} while(1);
+		}
 	}
 
 	req.operation = 'Q';
@@ -102,10 +102,9 @@ int main(int argc, char *argv[]) {
 	write(fd_write, &req, sizeof(Request));
 
 	close(fd_write);
-
+	unlink(pipeResponse);
 	free(pipeResponse);
 	free(pipeReceptor);
-
 	return 0;
 }
 

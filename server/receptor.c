@@ -132,10 +132,10 @@ int main(int argc, char *argv[]) {
 						now->tm_mday, now->tm_mon + 1, now->tm_year + 1900);
 
 	                                library_addReport(&library, 'P', book->title, book->isbn, copy->id, copy->date);
-					library.interaction = 1;
 				} else {
-					sendResponse(&req, "✅ Solicitud Rechazada. El libro solicitado no tiene copias disponibles.");
+					sendResponse(&req, "Solicitud Rechazada. El libro solicitado no tiene copias disponibles.");
 				}
+				library.interaction = 1;
 			} else if (req.operation == 'Q') {
 				printf("\n\n");
 				printf("\nCliente %d ha terminado sus solicitudes.\n", req.pid);
